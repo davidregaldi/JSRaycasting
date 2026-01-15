@@ -60,3 +60,20 @@ function drawLine(x1, y1, x2, y2, cssColor) {
   screenContext.lineTo(x2, y2);
   screenContext.stroke();
 }
+
+function rayCasting() { }
+
+function clearScreen() {
+  screenContext.clearRect(0, 0, data.screen.width, data.screen.height);
+}
+
+// Main loop
+main();
+
+function main() {
+  setInterval(function () {
+    clearScreen();
+    rayCasting();
+  }, data.render.delay);
+}
+
