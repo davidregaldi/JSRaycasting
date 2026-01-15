@@ -115,6 +115,9 @@ function rayCasting() {
     // Pythagoras theorem
     let distance = Math.sqrt(Math.pow(data.player.x - ray.x, 2) + Math.pow(data.player.y - ray.y, 2));
 
+    // Fish eye fix
+    distance = distance * Math.cos(degreeToRadians(rayAngle - data.player.angle));
+
     // Wall height
     let wallHeight = Math.floor(data.screen.halfHeight / distance);
 
