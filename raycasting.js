@@ -1,8 +1,8 @@
 // Data
 const data = {
   screen: {
-    width: 640,
-    height: 480,
+    width: 800,
+    height: 600,
     halfWidth: null,
     halfHeight: null
   },
@@ -19,8 +19,10 @@ const data = {
     x: 2,
     y: 2,
     angle: 90,
-    hp: 100,
-    armor: 0
+    movement: 0.5,
+    rotation: 5.0,
+    hp: 150,
+    armor: 125
   },
   map: [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
@@ -36,9 +38,15 @@ const data = {
   ],
   mapStyles: {
     borderColor: "dimgray",
-    floorColor: "sienna",
+    floorColor: "peru",
     skyColor: "cornflowerblue",
     wallColor: "gray"
+  },
+  key: {
+    up: "KeyW",
+    down: "KeyS",
+    left: "KeyA",
+    right: "KeyD"
   },
 }
 
@@ -47,6 +55,16 @@ data.screen.halfWidth = data.screen.width / 2;
 data.screen.halfHeight = data.screen.height / 2;
 data.rayCasting.incrementAngle = data.player.fov / data.screen.width;
 data.player.halfFov = data.player.fov / 2;
+
+// Fonts
+const fontStyle = document.createElement("style");
+fontStyle.innerHTML = `
+  @import url('https://fonts.cdnfonts.com/css/amazdoom');
+  body {
+    font-family: 'AmazDooM', sans-serif;
+  }
+`;
+document.head.appendChild(fontStyle);
 
 // Canvas
 const screen = document.createElement("canvas");
@@ -129,6 +147,56 @@ function clearScreen() {
   screenContext.clearRect(0, 0, data.screen.width, data.screen.height);
 }
 
+// Input handling
+document.addEventListener('keydown', (event) => {
+  let keyCode = event.code;
+
+  if (keyCode === data.key.up || keyCode === "ArrowUp") {
+    let playerCos = Math.cos(degreeToRadians(data.player.angle)) * data.player.movement;
+    let playerSin = Math.sin(degreeToRadians(data.player.angle)) * data.player.movement;
+    let newX = data.player.x + playerCos;
+    let newY = data.player.y + playerSin;
+
+    // Collision test
+    if (data.map[Math.floor(newY)][Math.floor(newX)] == 0) {
+      data.player.x = newX;
+      data.player.y = newY;
+    }
+  } else if (keyCode === data.key.down || keyCode === "ArrowDown") {
+    let playerCos = Math.cos(degreeToRadians(data.player.angle)) * data.player.movement;
+    let playerSin = Math.sin(degreeToRadians(data.player.angle)) * data.player.movement;
+    let newX = data.player.x - playerCos;
+    let newY = data.player.y - playerSin;
+
+    // Collision test
+    if (data.map[Math.floor(newY)][Math.floor(newX)] == 0) {
+      data.player.x = newX;
+      data.player.y = newY;
+    }
+  } else if (keyCode === data.key.left || keyCode === "ArrowLeft") {
+    data.player.angle -= data.player.rotation;
+  } else if (keyCode === data.key.right || keyCode === "ArrowRight") {
+    data.player.angle += data.player.rotation;
+  }
+});
+
+function drawHUD() {
+  screenContext.font = "26px AmazDooM";
+  screenContext.fillStyle = "lightgrey";
+  screenContext.fillText("HEALTH: " + data.player.hp, 10, data.screen.height - 10);
+  screenContext.fillText("ARMOR: " + data.player.armor, data.screen.width - 164, data.screen.height - 10);
+
+  // Crosshair
+  screenContext.strokeStyle = "yellow";
+  screenContext.lineWidth = 3;
+  screenContext.beginPath();
+  screenContext.moveTo(data.screen.halfWidth - 8, data.screen.halfHeight);
+  screenContext.lineTo(data.screen.halfWidth + 8, data.screen.halfHeight);
+  screenContext.moveTo(data.screen.halfWidth, data.screen.halfHeight - 8);
+  screenContext.lineTo(data.screen.halfWidth, data.screen.halfHeight + 8);
+  screenContext.stroke();
+}
+
 // Main loop
 main();
 
@@ -136,5 +204,6 @@ function main() {
   setInterval(function () {
     clearScreen();
     rayCasting();
+    drawHUD();
   }, data.render.delay);
 }
