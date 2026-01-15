@@ -34,3 +34,10 @@ const data = {
   ]
 }
 
+// Calculated data
+data.screen.halfWidth = data.screen.width / 2;
+data.screen.halfHeight = data.screen.height / 2;
+data.rayCasting.incrementAngle = data.player.fov / data.screen.width;
+data.player.halfFov = data.player.fov / 2;
+
+
