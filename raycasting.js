@@ -40,4 +40,10 @@ data.screen.halfHeight = data.screen.height / 2;
 data.rayCasting.incrementAngle = data.player.fov / data.screen.width;
 data.player.halfFov = data.player.fov / 2;
 
-
+// Canvas
+const screen = document.createElement("canvas");
+screen.width = data.screen.width;
+screen.height = data.screen.height;
+screen.style.border = "1px solid black";
+document.body.appendChild(screen);
+const screenContext = screen.getContext("2d");
